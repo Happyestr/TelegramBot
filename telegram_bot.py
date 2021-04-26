@@ -330,7 +330,7 @@ def attractions_question(update, context):
     response = response.lower()
     if response not in ['дождливый', 'снежный', 'разнообразный', 'солнечный']:
         update.message.reply_text('Ошибка! Нажмите "Дальше" и следуйте инструкции', reply_markup=markup_further)
-        return 10
+        return 11
     num_of_function += 1
     for i in slovar:
         if slovar[i]['Погода'] == response:
@@ -352,7 +352,7 @@ def beach_question(update, context):
     response = response.lower()
     if response not in ['хочу', 'не хочу']:
         update.message.reply_text('Ошибка! Нажмите "Дальше" и следуйте инструкции', reply_markup=markup_further)
-        return 10
+        return 11
     num_of_function += 1
     for i in slovar:
         if slovar[i]['Достопремечательности'] == response:
@@ -373,7 +373,7 @@ def ski_resort_question(update, context):
     response = response.lower()
     if response not in ['хочу', 'не хочу']:
         update.message.reply_text('Ошибка! Нажмите "Дальше" и следуйте инструкции', reply_markup=markup_further)
-        return 10
+        return 11
     num_of_function += 1
     for i in slovar:
         if slovar[i]['Пляж'] == response:
@@ -395,7 +395,7 @@ def shopping_question(update, context):
     response = response.lower()
     if response not in ['хочу', 'не хочу']:
         update.message.reply_text('Ошибка! Нажмите "Дальше" и следуйте инструкции', reply_markup=markup_further)
-        return 10
+        return 11
     num_of_function += 1
     for i in slovar:
         if slovar[i]['Горнолыжный курорт'] == response:
@@ -416,7 +416,7 @@ def type_of_recreation_question(update, context):
     response = response.lower()
     if response not in ['хочу', 'не хочу']:
         update.message.reply_text('Ошибка! Нажмите "Дальше" и следуйте инструкции', reply_markup=markup_further)
-        return 10
+        return 11
     num_of_function += 1
     for i in slovar:
         if slovar[i]['Шопинг'] == response:
@@ -437,7 +437,7 @@ def transport_question(update, context):
     response = response.lower()
     if response not in ['активный', 'неактивный']:
         update.message.reply_text('Ошибка! Нажмите "Дальше" и следуйте инструкции', reply_markup=markup_further)
-        return 10
+        return 11
     num_of_function += 1
     for i in slovar:
         if slovar[i]['Отдых'] == response:
@@ -458,7 +458,7 @@ def children_question(update, context):
     response = response.lower()
     if response not in ['пешком', 'велосипед', 'скутер', 'машина', 'лодка', 'самолёт']:
         update.message.reply_text('Ошибка! Нажмите "Дальше" и следуйте инструкции', reply_markup=markup_further)
-        return 10
+        return 11
     num_of_function += 1
     for i in slovar:
         if slovar[i]['Транспорт'] == response:
@@ -479,7 +479,7 @@ def result(update, context):
     response = response.lower()
     if response not in ['да', 'нет']:
         update.message.reply_text('Ошибка! Нажмите "Дальше" и следуйте инструкции', reply_markup=markup_further)
-        return 10
+        return 11
     num_of_function += 1
     for i in slovar:
         if slovar[i]['Дети'] == response:
@@ -516,10 +516,10 @@ def result(update, context):
 
 def mail(update, context):
     server = 'smtp.mail.ru'
-    user = 'botiscaf_bot@mail.ru'
-    password = "OaAriAuR22i$"
+    user = 'botiscaf_bot3@mail.ru'
+    password = "{1aiRpooA2AR"
     recipients = ['kirilll_0306@mail.ru', 'azelen04@mail.ru']
-    sender = 'botiscaf_bot@mail.ru'
+    sender = 'botiscaf_bot3@mail.ru'
     subject = 'Сообщение от пользователя'
     text = update.message.text
     msg = MIMEMultipart('alternative')
