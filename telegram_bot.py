@@ -3,6 +3,9 @@ from telegram.ext import CommandHandler, ConversationHandler
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 import time
 import requests
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 num_of_function = 1
 
@@ -310,11 +313,10 @@ def climate_re_question(update, context):
 
 
 def re_start(update, context):
-    update.message.reply_text('Извините информация введена некорректно, повторите ввод, используя данную Вам клавиатуру.', reply_markup=markup_error)
-    if num_of_function == 1:
-        return num_of_function + 10
-    else:
-        return num_of_function + 11
+    update.message.reply_text(
+        'Извините информация введена некорректно, повторите ввод, используя данную Вам клавиатуру.',
+        reply_markup=markup_error)
+    return num_of_function + 11
 
 
 def help(update, context):
@@ -339,7 +341,8 @@ def attractions_question(update, context):
 
 
 def attractions_re_question(update, context):
-    update.message.reply_text("Хотели бы Вы посещать достопремечательности во время вашей поездки?", reply_markup=markup_attractions)
+    update.message.reply_text("Хотели бы Вы посещать достопремечательности во время вашей поездки?",
+                              reply_markup=markup_attractions)
     return num_of_function
 
 
@@ -381,7 +384,8 @@ def ski_resort_question(update, context):
 
 
 def ski_resort_re_question(update, context):
-    update.message.reply_text('Хотели бы Вы посещать горнолыжный курорт во время вашей поездки?', reply_markup=markup_ski_resort)
+    update.message.reply_text('Хотели бы Вы посещать горнолыжный курорт во время вашей поездки?',
+                              reply_markup=markup_ski_resort)
     return num_of_function
 
 
@@ -506,6 +510,46 @@ def result(update, context):
         update.message.chat_id,
         slovar_result[city]['Картинка']
     )
+    update.message.reply_text('Может у Вас есть пожелания по улучшению бота?', reply_markup=markup_children)
+    return num_of_function
+
+
+def mail(update, context):
+    server = 'smtp.mail.ru'
+    user = 'botiscaf_bot@mail.ru'
+    password = "OaAriAuR22i$"
+    recipients = ['kirilll_0306@mail.ru', 'azelen04@mail.ru']
+    sender = 'botiscaf_bot@mail.ru'
+    subject = 'Сообщение от пользователя'
+    text = update.message.text
+    msg = MIMEMultipart('alternative')
+    msg["Subject"] = subject
+    msg["From"] = 'Python script <' + sender + '>'
+    msg["To"] = ', '.join(recipients)
+    msg["Reply-To"] = sender
+    msg["Return-path"] = sender
+    part_text = MIMEText(text, 'plain')
+    msg.attach(part_text)
+    mail = smtplib.SMTP_SSL(server)
+    mail.login(user, password)
+    mail.sendmail(sender, recipients, msg.as_string())
+    mail.quit()
+    return num_of_function
+
+
+def offers_question(update, context):
+    global num_of_function
+    response = update.message.text
+    response = response.lower()
+    num_of_function += 1
+    if response == 'да':
+        update.message.reply_text("Введите свои пожелания: ")
+        return 21
+    return num_of_function
+
+
+def offers_re_question(update, context):
+    update.message.reply_text('Может у Вас есть пожелания по улучшению бота?', reply_markup=markup_children)
     return num_of_function
 
 
@@ -537,16 +581,19 @@ def main():
             6: [MessageHandler(Filters.text, transport_question, pass_user_data=True)],
             7: [MessageHandler(Filters.text, children_question, pass_user_data=True)],
             8: [MessageHandler(Filters.text, result, pass_user_data=True)],
-            9: [CommandHandler('start', start)],
-            10: [MessageHandler(Filters.text, re_start)],
-            11: [MessageHandler(Filters.text, climate_re_question)],
-            12: [MessageHandler(Filters.text, attractions_re_question)],
-            13: [MessageHandler(Filters.text, beach_re_question)],
-            14: [MessageHandler(Filters.text, ski_resort_re_question)],
-            15: [MessageHandler(Filters.text, shopping_re_question)],
-            16: [MessageHandler(Filters.text, type_of_recreation_re_question)],
-            17: [MessageHandler(Filters.text, transport_re_question)],
-            18: [MessageHandler(Filters.text, children_re_question)]
+            9: [MessageHandler(Filters.text, offers_question)],
+            10: [CommandHandler('start', start)],
+            11: [MessageHandler(Filters.text, re_start)],
+            12: [MessageHandler(Filters.text, climate_re_question)],
+            13: [MessageHandler(Filters.text, attractions_re_question)],
+            14: [MessageHandler(Filters.text, beach_re_question)],
+            15: [MessageHandler(Filters.text, ski_resort_re_question)],
+            16: [MessageHandler(Filters.text, shopping_re_question)],
+            17: [MessageHandler(Filters.text, type_of_recreation_re_question)],
+            18: [MessageHandler(Filters.text, transport_re_question)],
+            19: [MessageHandler(Filters.text, children_re_question)],
+            20: [MessageHandler(Filters.text, offers_re_question)],
+            21: [MessageHandler(Filters.text, mail)]
         },
 
         fallbacks=[CommandHandler('stop', stop)]
