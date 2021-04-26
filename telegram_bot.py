@@ -4,6 +4,8 @@ from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 import time
 import requests
 
+num_of_function = 1
+
 slovar = {'Рим': {'Погода': 'разнообразный',
                   'Достопремечательности': 'хочу',
                   'Пляж': 'не хочу',
@@ -280,8 +282,16 @@ markup_transport = ReplyKeyboardMarkup(keyboard_transport, one_time_keyboard=Tru
 keyboard_children = [["Да", "Нет"]]
 markup_children = ReplyKeyboardMarkup(keyboard_children, one_time_keyboard=True)
 
+keyboard_error = [['OK']]
+markup_error = ReplyKeyboardMarkup(keyboard_error, one_time_keyboard=True)
+
+keyboard_further = [['Дальше']]
+markup_further = ReplyKeyboardMarkup(keyboard_further, one_time_keyboard=True)
+
 
 def clearspis():
+    global num_of_function
+    num_of_function = 1
     for i in slovar_counts:
         slovar_counts[i] = 0
 
@@ -291,7 +301,20 @@ def start(update, context):
     update.message.reply_text(
         "Здравствуйте! Я - бот помощник. Я задам вам несколько вопросов и, исходя из ответов, выберу вам страну для отдыха. Для начала, выберите климат.",
         reply_markup=markup_weather)
-    return 1
+    return num_of_function
+
+
+def climate_re_question(update, context):
+    update.message.reply_text('Выберите климат, наиболее подходящий для Вас:', reply_markup=markup_weather)
+    return num_of_function
+
+
+def re_start(update, context):
+    update.message.reply_text('Извините информация введена некорректно, повторите ввод, используя данную Вам клавиатуру.', reply_markup=markup_error)
+    if num_of_function == 1:
+        return num_of_function + 10
+    else:
+        return num_of_function + 11
 
 
 def help(update, context):
@@ -300,85 +323,160 @@ def help(update, context):
 
 
 def attractions_question(update, context):
+    global num_of_function
     response = update.message.text
     response = response.lower()
+    if response not in ['дождливый', 'снежный', 'разнообразный', 'солнечный']:
+        update.message.reply_text('Ошибка! Нажмите "Дальше" и следуйте инструкции', reply_markup=markup_further)
+        return 10
+    num_of_function += 1
     for i in slovar:
         if slovar[i]['Погода'] == response:
             slovar_counts[i] += 1
     update.message.reply_text(
         "Хотели бы Вы посещать достопримечательности во время вашей поездки?", reply_markup=markup_attractions)
-    return 2
+    return num_of_function
+
+
+def attractions_re_question(update, context):
+    update.message.reply_text("Хотели бы Вы посещать достопремечательности во время вашей поездки?", reply_markup=markup_attractions)
+    return num_of_function
 
 
 def beach_question(update, context):
+    global num_of_function
     response = update.message.text
     response = response.lower()
+    if response not in ['хочу', 'не хочу']:
+        update.message.reply_text('Ошибка! Нажмите "Дальше" и следуйте инструкции', reply_markup=markup_further)
+        return 10
+    num_of_function += 1
     for i in slovar:
         if slovar[i]['Достопремечательности'] == response:
             slovar_counts[i] += 1
     update.message.reply_text(
         "Хотели бы Вы посещать пляж во время вашей поездки?", reply_markup=markup_beach)
-    return 3
+    return num_of_function
+
+
+def beach_re_question(update, context):
+    update.message.reply_text('Хотели бы Вы посещать пляж во время вашей поездки?', reply_markup=markup_beach)
+    return num_of_function
 
 
 def ski_resort_question(update, context):
+    global num_of_function
     response = update.message.text
     response = response.lower()
+    if response not in ['хочу', 'не хочу']:
+        update.message.reply_text('Ошибка! Нажмите "Дальше" и следуйте инструкции', reply_markup=markup_further)
+        return 10
+    num_of_function += 1
     for i in slovar:
         if slovar[i]['Пляж'] == response:
             slovar_counts[i] += 1
     update.message.reply_text(
         "Хотели бы Вы посещать горнолыжный курорт во время вашей поездки?", reply_markup=markup_ski_resort)
-    return 4
+    return num_of_function
+
+
+def ski_resort_re_question(update, context):
+    update.message.reply_text('Хотели бы Вы посещать горнолыжный курорт во время вашей поездки?', reply_markup=markup_ski_resort)
+    return num_of_function
 
 
 def shopping_question(update, context):
+    global num_of_function
     response = update.message.text
     response = response.lower()
+    if response not in ['хочу', 'не хочу']:
+        update.message.reply_text('Ошибка! Нажмите "Дальше" и следуйте инструкции', reply_markup=markup_further)
+        return 10
+    num_of_function += 1
     for i in slovar:
         if slovar[i]['Горнолыжный курорт'] == response:
             slovar_counts[i] += 1
     update.message.reply_text(
         "Планируете ли Вы ходить на шопинг во время вашей поездки?", reply_markup=markup_shopping)
-    return 5
+    return num_of_function
+
+
+def shopping_re_question(update, context):
+    update.message.reply_text('Планируете ли Вы ходить на шопинг во время вашей поездки?', reply_markup=markup_shopping)
+    return num_of_function
 
 
 def type_of_recreation_question(update, context):
+    global num_of_function
     response = update.message.text
     response = response.lower()
+    if response not in ['хочу', 'не хочу']:
+        update.message.reply_text('Ошибка! Нажмите "Дальше" и следуйте инструкции', reply_markup=markup_further)
+        return 10
+    num_of_function += 1
     for i in slovar:
         if slovar[i]['Шопинг'] == response:
             slovar_counts[i] += 1
     update.message.reply_text(
         "Какой вид отдыха вам предпочтительние?", reply_markup=markup_type_of_recreation)
-    return 6
+    return num_of_function
+
+
+def type_of_recreation_re_question(update, context):
+    update.message.reply_text('Какой вид отдыха вам предпочтительние?', reply_markup=markup_type_of_recreation)
+    return num_of_function
 
 
 def transport_question(update, context):
+    global num_of_function
     response = update.message.text
     response = response.lower()
+    if response not in ['активный', 'неактивный']:
+        update.message.reply_text('Ошибка! Нажмите "Дальше" и следуйте инструкции', reply_markup=markup_further)
+        return 10
+    num_of_function += 1
     for i in slovar:
         if slovar[i]['Отдых'] == response:
             slovar_counts[i] += 1
     update.message.reply_text(
         "На чём планируете передвигаться по городу?", reply_markup=markup_transport)
-    return 7
+    return num_of_function
+
+
+def transport_re_question(update, context):
+    update.message.reply_text('На чём планируете передвигаться по городу?', reply_markup=markup_transport)
+    return num_of_function
 
 
 def children_question(update, context):
+    global num_of_function
     response = update.message.text
     response = response.lower()
+    if response not in ['пешком', 'велосипед', 'скутер', 'машина', 'лодка', 'самолёт']:
+        update.message.reply_text('Ошибка! Нажмите "Дальше" и следуйте инструкции', reply_markup=markup_further)
+        return 10
+    num_of_function += 1
     for i in slovar:
         if slovar[i]['Транспорт'] == response:
             slovar_counts[i] += 1
     update.message.reply_text(
         "Поедите ли Вы с детьми?", reply_markup=markup_children)
-    return 8
+    return num_of_function
+
+
+def children_re_question(update, context):
+    update.message.reply_text('Поедите ли Вы с детьми?', reply_markup=markup_children)
+    return num_of_function
 
 
 def result(update, context):
+    global num_of_function
     response = update.message.text
     response = response.lower()
+    if response not in ['да', 'нет']:
+        update.message.reply_text('Ошибка! Нажмите "Дальше" и следуйте инструкции', reply_markup=markup_further)
+        return 10
+    num_of_function += 1
     for i in slovar:
         if slovar[i]['Дети'] == response:
             slovar_counts[i] += 1
@@ -396,7 +494,7 @@ def result(update, context):
     toponym_coodrinates = toponym["Point"]["pos"]
     toponym_longitude, toponym_lattitude = toponym_coodrinates.split(" ")
     ll = ",".join([toponym_longitude, toponym_lattitude])
-    delta = '0.05'
+    delta = '0.2'
     spn = ",".join([delta, delta])
     static_api_request = f"http://static-maps.yandex.ru/1.x/?ll={ll}&spn={spn}&l=map"
     update.message.reply_text(f"""Как мне кажется, Вам подойдёт: {city} \n \n {slovar_result[city]['Информация']}""")
@@ -408,7 +506,7 @@ def result(update, context):
         update.message.chat_id,
         slovar_result[city]['Картинка']
     )
-    return 9
+    return num_of_function
 
 
 def stop(update, context):
@@ -439,7 +537,16 @@ def main():
             6: [MessageHandler(Filters.text, transport_question, pass_user_data=True)],
             7: [MessageHandler(Filters.text, children_question, pass_user_data=True)],
             8: [MessageHandler(Filters.text, result, pass_user_data=True)],
-            9: [MessageHandler(Filters.text, start)]
+            9: [CommandHandler('start', start)],
+            10: [MessageHandler(Filters.text, re_start)],
+            11: [MessageHandler(Filters.text, climate_re_question)],
+            12: [MessageHandler(Filters.text, attractions_re_question)],
+            13: [MessageHandler(Filters.text, beach_re_question)],
+            14: [MessageHandler(Filters.text, ski_resort_re_question)],
+            15: [MessageHandler(Filters.text, shopping_re_question)],
+            16: [MessageHandler(Filters.text, type_of_recreation_re_question)],
+            17: [MessageHandler(Filters.text, transport_re_question)],
+            18: [MessageHandler(Filters.text, children_re_question)]
         },
 
         fallbacks=[CommandHandler('stop', stop)]
